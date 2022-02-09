@@ -8,6 +8,10 @@ MainWindow::MainWindow(Wallet *w, QWidget *parent)
 {
     this->wallet = w;
     ui->setupUi(this);
+    chartView = new QChartView();
+    chartView->setRubberBand(QChartView::RectangleRubberBand);
+    ui->chartwidget->addWidget(chartView);
+
 
     Reload();
 }
@@ -21,12 +25,13 @@ MainWindow::~MainWindow()
 void MainWindow::Reload(){
     ui->summ->setText(QString::number(wallet->GetSumm()));
 
-    auto sumByTag = wallet->GetSummbyTag();
-    std::string str = "";
+    const std::map<std::string, int> * sumByTag = wallet->GetSummbyTag();
+    ui->label0->clear();
     for (auto e : *sumByTag){
-        str += e.first + ": " + std::to_string(e.second) + "\n";
+        ui->label0->addItem(QString::fromStdString(e.first + ": " + std::to_string(e.second)));
     }
-    ui->label0 ->setText(QString::fromStdString(str));
+
+    CreateChart(sumByTag);
     this->adjustSize();
 }
 
@@ -53,6 +58,23 @@ void MainWindow::on_pushButton_clicked()
 
     newTransaction.setModal(true);
     newTransaction.exec();
+}
+
+void MainWindow::CreateChart(const std::map<std::string, int> * map){
+    QPieSeries *series = new QPieSeries();
+
+    for (auto e : *map){
+        series->append(QString::fromStdString(e.first), e.second);
+    }
+
+    for (int i = 0; i < map->size(); i++){
+        series->slices().at(i)->setLabelVisible();
+    }
+
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chartView->setChart(chart);
+
 }
 
 void MainWindow::on_transactions_clicked()

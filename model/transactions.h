@@ -6,7 +6,6 @@
 class Transactions
 {
 public:
-    Transactions();
     Transactions(time_t t, int amount, std::string tag);
     int GetAmount();
     std::string GetTag();

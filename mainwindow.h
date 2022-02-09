@@ -6,6 +6,9 @@
 #include "newtransaction.h"
 #include <list>
 #include <transactiondialog.h>
+#include <QtCharts/QPieSeries>
+#include <QtCharts/QPieSlice>
+#include <QtCharts/QChartView>
 
 
 
@@ -31,9 +34,11 @@ private slots:
     void on_transactions_clicked();
 
 private:
+    void CreateChart(const std::map<std::string, int> *map);
     void Reload();
     Ui::MainWindow *ui;
     Wallet *wallet;
+    QChartView *chartView;
 };
 
 #endif // MAINWINDOW_H

@@ -27,7 +27,6 @@ bool Wallet::AddTransaction(time_t *t, int *amount, std::string *tag, bool write
     } catch (std::exception ex){
         return false;
     }
-
     return true;
 }
 
@@ -71,6 +70,10 @@ void Wallet::IncreaseVariables(int *amount, std::string *tag){
         this->summByTags[*tag] += *amount;
     }else {
         this->summByTags[*tag] = *amount;
+    }
+
+    if(summByTags[*tag] == 0){
+        summByTags.erase(*tag);
     }
 }
 
